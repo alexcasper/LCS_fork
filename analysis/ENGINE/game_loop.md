@@ -12,7 +12,7 @@ The game starts in `main()` (in `src/game.cpp`), which:
 
 ## Title Mode
 
-`mode_title()` presents the main menu with options for New Game, Load Game, High Scores, and Help. It runs a `do-while` loop awaiting player input before either creating a new game or loading a saved one, then transitions to Base Mode.
+`mode_title()` presents the title screen, allowing the player to toggle music, view high scores, and then either select an existing save or start a new game. It runs a `do-while` loop awaiting player input before either creating a new game or loading a saved one, then transitions to Base Mode.
 
 ## Base Mode
 
@@ -26,7 +26,7 @@ The game starts in `main()` (in `src/game.cpp`), which:
 | `w` | Wait / advance to next day      |
 | `f` | Deploy squad on an operation     |
 | `a` | Activate and manage squads       |
-| `z` | Fundraising activities           |
+| `z` | Cycle/select safehouses          |
 | `r` | Review mode (characters, stats)  |
 | `l` | View the Liberal Agenda          |
 | `x` | Exit to title screen             |
