@@ -70,6 +70,44 @@ When the squad exits or is defeated, control returns to Base Mode.
 
 The game supports saving and loading via serialized game state. The autosave system writes at each day boundary. Save files capture the full global state: all characters, squads, vehicles, locations, political data, and the game clock.
 
+## Activity Scheduling
+
+The daily cycle includes an activity dispatcher that processes squad member assignments. Each activity type has a dedicated handler function:
+
+| Handler                | Activity                                      |
+|------------------------|-----------------------------------------------|
+| `doActivitySolicit()`  | Fundraising through donations                 |
+| `doActivityGraffiti()` | Spray-painting propaganda                     |
+| `doActivityProstitution()` | Underground fundraising                  |
+| `doActivityTeach()`    | Training other squad members                  |
+| `doActivityRecruit()`  | Recruiting new members from the public        |
+| `doActivitySteal()`    | Theft operations for funding                  |
+
+Activities execute probabilistically — not every assigned activity triggers each day. Success rates and output values scale with the relevant skill, while failure can trigger arrest attempts and increase location heat.
+
+## Event Processing
+
+The monthly cycle processes several event categories in sequence:
+
+1. **Law proposals** — Laws may be put to simulated public votes (1000 voters).
+2. **Congressional bills** — House and Senate vote based on member alignments.
+3. **Supreme Court rulings** — Justices rule on constitutional challenges with built-in biases.
+4. **Elections** — Senate/House every 2 years, presidential every 4 years.
+5. **Sleeper agent updates** — Sleeper agents in institutions produce effects based on their roles.
+6. **Endgame evaluation** — Win and loss conditions are checked after all political processing.
+
+## News Generation Pipeline
+
+At the end of each day with newsworthy events, the news engine processes stories through a pipeline:
+
+1. **Event creation** — Squad actions, major events, and CCS activities generate news story objects.
+2. **Priority scoring** — Each story receives a 0–100+ priority based on squad size, violence level, and site profile.
+3. **Page assignment** — A greedy algorithm assigns the highest-priority stories to front pages.
+4. **Impact calculation** — Page placement multiplies opinion impact (Page 1: ×5, Page 2: ×3, Page 3: ×2).
+5. **Opinion update** — Final impact values are applied to the global `attitude[]` array.
+
+The Liberal Guardian newspaper amplifies pro-LCS stories by an additional ×5 multiplier when player-controlled writers staff it.
+
 ## Configuration
 
 `init.txt` provides runtime settings:

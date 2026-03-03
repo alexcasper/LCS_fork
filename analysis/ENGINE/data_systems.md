@@ -62,6 +62,33 @@ This file is read once at startup and influences input handling and save behavio
 
 The build system (via `Makefile.am`) installs data files to `$(datadir)/lcs/art/`. This includes all XML definitions, graphics, map data, and audio assets. The game locates these files relative to its data directory at runtime.
 
+## Configuration Factory Pattern
+
+The configuration system in `configfile.cpp` implements a factory pattern for data-driven object creation:
+
+### File Format
+
+Configuration files use tab-separated `COMMAND VALUE` pairs with `#` comments:
+
+```
+# Site map definition
+SITEMAP GOVERNMENT_POLICESTATION
+TILE    BLOCK,RESTRICTED
+SCRIPT  ROOM
+SPECIAL POLICESTATION_LOCKUP 1
+```
+
+### Architecture
+
+| Component              | Role                                                     |
+|------------------------|----------------------------------------------------------|
+| `configurable` (base)  | Virtual base class with `configure(command, value)` method |
+| `createObject(type)`   | Factory function that creates the appropriate game object  |
+| `readConfigFile()`     | Reads file line by line, dispatching to object `configure()` |
+| `readLine()`           | Parses a single line into command and value components     |
+
+The factory pattern allows new object types to be added by implementing `configurable::configure()` without modifying the parser.
+
 ## Modding
 
 Because game content is defined in external XML files, the data system supports modding:
@@ -71,3 +98,13 @@ Because game content is defined in external XML files, the data system supports 
 - **New creatures**: Add entries to `creatures.xml` with attributes, skills, equipment, and AI behavior.
 - **New augmentations**: Add entries to `augmentations.xml` with stat effects, costs, and requirements.
 - **New site layouts**: Create CSV files and reference them in `sitemaps.txt`.
+
+### Modding Pipeline
+
+The load order for modded content follows the same initialization sequence as the base game:
+
+1. XML type definitions are parsed by `populate_from_xml()` and registered in type arrays.
+2. Site map configurations are loaded by `readConfigFile()` using the factory pattern.
+3. CSV map data is read by `readMap()` for hand-crafted level layouts.
+
+Type registries (`weapontype[]`, `armortype[]`, `creaturetype[]`) use string-based lookups, so modded content can reference or override existing types by name.
