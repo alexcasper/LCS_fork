@@ -16,8 +16,10 @@ The following XML files are loaded during initialization (in `src/game.cpp`):
 | `armors.xml`        | Armor type definitions                |
 | `creatures.xml`     | NPC and creature type definitions     |
 | `augmentations.xml` | Character augmentation definitions    |
+| `loot.xml`          | Loot table and item drop definitions  |
+| `masks.xml`         | Content mask and filtering rules      |
 
-Each file is parsed by `populate_from_xml()`, which reads XML elements and populates the corresponding type registry (e.g., `weapontype[]`, `armortype[]`, `creaturetype[]`).
+Each of these files is parsed by the appropriate loader function (typically `populate_from_xml()`, with `masks.xml` handled by `populate_masks_from_xml()`), which reads XML elements and populates the corresponding type registry (e.g., `weapontype[]`, `armortype[]`, `creaturetype[]`).
 
 ## Site Map Data
 
@@ -25,7 +27,7 @@ Site layouts are defined through a combination of formats:
 
 | Format   | Files                              | Purpose                          |
 |----------|------------------------------------|----------------------------------|
-| `.csv`   | Bank.csv, WhiteHouse.csv, etc.    | Tile-based site map definitions   |
+| `.csv`   | `art/mapCSV_Bank_Tiles.csv`, `art/mapCSV_WhiteHouse_Tiles.csv`, etc. | Tile-based site map definitions   |
 | `.txt`   | `sitemaps.txt`                     | Site map configuration and layout rules |
 
 The `readConfigFile()` function loads `sitemaps.txt` to determine how procedural site generation combines with hand-crafted CSV tile data.
@@ -34,7 +36,7 @@ The `readConfigFile()` function loads `sitemaps.txt` to determine how procedural
 
 | Format   | Files                              | Purpose                          |
 |----------|------------------------------------|----------------------------------|
-| `.cpc`   | bigletters.cpc, newstops.cpc, etc.| Compressed pixel character graphics |
+| `.cpc`   | largecap.cpc, newstops.cpc, newspic.cpc | Compressed pixel character graphics |
 | `.cmv`   | Various animation files            | Movie / animation data            |
 | `.ogg`   | Music files in `art/`              | Background music (Ogg Vorbis)     |
 | `.mid`   | MIDI files in `art/`               | Alternative music (MIDI format)   |
@@ -50,10 +52,10 @@ Graphics data is stored in multi-dimensional arrays:
 
 ```
 # Keyboard layout
-pagekeys:brackets
+pagekeys=brackets
 
 # Save behavior
-autosave:on
+autosave=On
 ```
 
 This file is read once at startup and influences input handling and save behavior.
@@ -68,14 +70,15 @@ The configuration system in `configfile.cpp` implements a factory pattern for da
 
 ### File Format
 
-Configuration files use tab-separated `COMMAND VALUE` pairs with `#` comments:
+Configuration files use tab-separated `COMMAND VALUE` pairs with `#` comments. Note that `readLine()` only captures a single token (up to whitespace) as the value:
 
 ```
 # Site map definition
 SITEMAP GOVERNMENT_POLICESTATION
-TILE    BLOCK,RESTRICTED
+TILE    RESTRICTED
 SCRIPT  ROOM
-SPECIAL POLICESTATION_LOCKUP 1
+SPECIAL POLICESTATION_LOCKUP
+UNIQUE  1
 ```
 
 ### Architecture
@@ -87,7 +90,7 @@ SPECIAL POLICESTATION_LOCKUP 1
 | `readConfigFile()`     | Reads file line by line, dispatching to object `configure()` |
 | `readLine()`           | Parses a single line into command and value components     |
 
-The factory pattern allows new object types to be added by implementing `configurable::configure()` without modifying the parser.
+Adding a new object type requires both implementing `configurable::configure()` and updating `createObject()` to recognize the new type string.
 
 ## Modding
 

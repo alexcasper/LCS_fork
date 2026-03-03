@@ -78,23 +78,24 @@ Sentences are measured in months and vary dramatically based on the crime:
 
 Drug sentences vary significantly based on the current drug law:
 
-| Law Value | Sentence Range                    |
-|-----------|-----------------------------------|
-| -2 (Arch-Conservative) | 3 + random(360) — up to 30 years |
-| -1 (Conservative)      | 3 + random(120) — up to 10 years |
-| 0 (Moderate)           | 3 + random(60) — up to 5 years   |
-| +1 (Liberal)           | 3 + random(12) — up to 1 year    |
-| +2 (Elite Liberal)     | Decriminalized — minimal sentence |
+| Law Value | Sentence Range                                      |
+|-----------|-----------------------------------------------------|
+| -2 (Arch-Conservative) | 3 + random(360) — up to 30 years           |
+| -1 (Conservative)      | 3 + random(120) — up to 10 years           |
+| 0 (Moderate)           | 3 + random(12) — up to 1 year              |
+| +1 (Liberal)           | No additional prison term for drug charges |
+| +2 (Elite Liberal)     | No additional prison term for drug charges |
 
 ### Flag Burning
 
 Flag burning sentencing depends entirely on the flag burning law:
 
-| Law Value | Outcome                                      |
-|-----------|----------------------------------------------|
-| -2        | 120 + random(241) months (treated as treason) |
-| -1        | 120 + random(241) months                     |
-| 0+        | Acquittal (protected speech)                 |
+| Law Value | Outcome                                                                 |
+|-----------|-------------------------------------------------------------------------|
+| -2        | For each flag burned, 50% chance to add 120 + random(241) months; in the other 50%, that count can contribute a negative sentence (special-case outcome). |
+| -1        | 36 months per burned flag                                              |
+| 0         | 1 month per burned flag                                                |
+| +1 or higher | Acquittal (protected speech)                                        |
 
 ### Sentence Reduction
 
@@ -110,7 +111,7 @@ The death penalty applies only to the most severe crimes, and its availability d
 | Law Value              | Death Penalty Chance |
 |------------------------|---------------------|
 | -2 (Arch-Conservative) | 100% (always)      |
-| -1 (Conservative)      | 33%                 |
+| -1 (Conservative)      | 67%                 |
 | 0 (Moderate)           | 50%                 |
 | +1 (Liberal)           | 20%                 |
 | +2 (Elite Liberal)     | 0% (abolished)      |

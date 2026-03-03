@@ -53,15 +53,15 @@ Each story type maps to specific opinion categories:
 | Civil rights actions  | `VIEW_CIVILRIGHTS`, `VIEW_WOMEN`         |
 | CCS stories           | Reduces CCS support; increases police opinion |
 
-### Violence Threshold
+### Violence and Backlash
 
-Public tolerance for political violence is calculated as:
+Violent squad actions increase the chance that news coverage will frame the LCS negatively rather than positively.
 
-```
-threshold = VIEW_POLITICALVIOLENCE + VIEW_LIBERALCRIMESQUADPOS
-```
+As violence rises, stories are more likely to:
 
-When violent squad actions exceed this threshold, the resulting news coverage **backfires** — shifting opinion against the LCS instead of in its favor.
+- Emphasize civilian casualties and collateral damage.
+- Portray the LCS as dangerous or extremist.
+- Reduce support for the LCS and related liberal causes instead of boosting them.
 
 ## The Liberal Guardian
 

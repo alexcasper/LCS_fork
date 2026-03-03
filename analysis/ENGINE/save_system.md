@@ -53,7 +53,7 @@ Complex objects use a factory pattern during load:
 
 1. Read the size-prefixed XML string from the binary stream.
 2. Pass the XML to `create_item()`, which determines the object type and constructs the appropriate class.
-3. Invalid types (removed or renamed in newer versions) are logged and discarded.
+3. Invalid types (removed or renamed in newer versions) are silently discarded — `create_item()` returns NULL and the caller skips assignment without emitting a log message.
 
 ## Error Handling
 
@@ -72,10 +72,10 @@ Diagnostic messages are written to the game log via `gamelog.log()`.
 Autosave is controlled by a boolean flag read from `init.txt`:
 
 ```
-autosave:on
+#autosave=On
 ```
 
-When enabled, the game calls `savegame()` at the end of each daily turn cycle and on title screen transitions. Autosave overwrites the main save file — there is no separate autosave slot.
+When enabled (by uncommenting and setting to `On`), the game calls `savegame()` at the end of each daily turn cycle and on title screen transitions. Autosave overwrites the main save file — there is no separate autosave slot.
 
 ## File I/O Abstraction Layer
 

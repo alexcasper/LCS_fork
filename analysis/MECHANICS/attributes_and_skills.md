@@ -18,7 +18,7 @@ Attributes serve as **caps for associated skills**: a character cannot raise a s
 
 ## Skills
 
-The game defines 33 skills organized into several categories.
+The game defines 31 skills (`SKILLNUM`) organized into several categories.
 
 ### Combat Skills
 
@@ -47,6 +47,7 @@ The game defines 33 skills organized into several categories.
 | Teaching    | Training other squad members in skills            |
 | Religion    | Religious knowledge and evangelical persuasion    |
 | Music       | Musical performance for fundraising and influence |
+| Art         | Artistic creation for fundraising and propaganda  |
 | Writing     | Journalism and propaganda writing                 |
 
 ### Technical Skills

@@ -19,8 +19,8 @@ src/
 ├── locations/            # World map and location management
 ├── news/                 # News story generation and media system
 ├── politics/             # Political alignment, law tracking, public opinion
-├── common/               # Shared utilities (equipment, display, actions)
-└── cursesgraphics.cpp    # Rendering layer (ncurses interface)
+├── common/               # Shared utilities (equipment, high-level display helpers, actions)
+└── cursesgraphics.cpp    # CP437 character translation utilities for curses backends
 ```
 
 ## Game Modes

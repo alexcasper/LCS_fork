@@ -52,34 +52,36 @@ Site operations begin in a covert state. The squad must avoid detection to opera
 
 ### Detection Check
 
-The `noticecheck()` function scans all NPCs in the current encounter for potential witnesses. It compares the best party member's **Stealth** skill against a difficulty determined by the NPC type:
+The `noticecheck()` function scans all NPCs in the current encounter for potential witnesses. It compares the best party member's **Stealth** skill against a difficulty determined by the NPC type. If Stealth fails, `disguisecheck()` uses a (potentially different) **Disguise** difficulty for the same NPC:
 
-| NPC Type               | Detection Difficulty |
-|------------------------|---------------------|
-| Generic civilians      | Very Easy (3)       |
-| Police, SWAT, gangs    | Easy (5)            |
-| Bouncers, security     | Challenging (7)     |
-| CEOs, judges, anchors  | Hard (9)            |
-| Secret Service         | Formidable (13)     |
-| Guard dogs             | Heroic (15)         |
+| NPC Type               | Stealth Difficulty | Disguise Difficulty |
+|------------------------|--------------------|---------------------|
+| Generic civilians      | Very Easy (3)      | Very Easy (3)       |
+| Police, SWAT, gangs    | Easy (5)           | Easy (5)            |
+| Bouncers, security     | Challenging (7)    | Easy (5)            |
+| CEOs, judges, anchors  | Hard (9)           | Hard (9)            |
+| Secret Service         | Formidable (13)    | Formidable (13)     |
+| Guard dogs             | Heroic (15)        | Heroic (15)         |
+
+In code, Stealth and Disguise difficulties are configured independently per NPC type; the table above reflects the default values used by `noticecheck()` and `disguisecheck()`.
 
 ### Detection Modifiers
 
-| Condition                      | Effect                          |
-|--------------------------------|---------------------------------|
-| `sitealarmtimer == 1`          | +6 to detection difficulty      |
-| `sitealarmtimer > 1`           | +3 to detection difficulty      |
-| Party size > 1                 | +3 per additional member        |
+| Condition                      | Effect                                   |
+|--------------------------------|------------------------------------------|
+| `sitealarmtimer == 1`          | +6 to Stealth detection difficulty       |
+| `sitealarmtimer > 1`           | +3 to Stealth detection difficulty       |
+| Party size > 1                 | +3 Stealth difficulty per extra member   |
 
 ### Detection Sequence
 
 When a suspicious situation is triggered (naked member, visible weapon, restricted area, or active alarm timer):
 
-1. **Stealth check** — Best party Stealth skill vs. difficulty.
-2. **Disguise check** — If Stealth fails, best party Disguise skill vs. difficulty.
+1. **Stealth check** — Best party Stealth skill vs. Stealth difficulty.
+2. **Disguise check** — If Stealth fails, best party Disguise skill vs. Disguise difficulty.
 3. **Detection** — If both fail, `sitealarm` is set to 1 and combat begins.
 
-Visible weapons bypass disguise checks entirely — a weapon score of 2 or higher causes instant detection.
+Visible weapons do not bypass Stealth or Disguise checks. Instead, if the squad has already been spotted (Stealth has failed) and any member has a weapon score of 2, that visible weapon causes immediate detection.
 
 ### Rejection Reasons
 
@@ -187,13 +189,13 @@ Excessive violence or destruction of property can alienate the masses, making st
 
 ## Key State Variables
 
-| Variable          | Type  | Purpose                                          |
-|-------------------|-------|--------------------------------------------------|
-| `sitealarm`       | bool  | Whether active combat is underway                |
-| `sitealarmtimer`  | int   | Suspicion countdown (-1 = undetected, 0+ = suspicious) |
-| `postalarmtimer`  | int   | Reinforcement escalation timer (0–100+)          |
-| `sitealienate`    | 0/1/2 | Public alienation level                          |
-| `sitecrime`       | int   | Cumulative crime points from this operation      |
-| `encounter_timer` | int   | Consecutive combat rounds counter                |
-| `encounter[]`     | array | Active NPCs in the current encounter             |
-| `levelmap[][][][]`| 3D    | Tile map with flags and special markers          |
+| Variable                | Type  | Purpose                                          |
+|-------------------------|-------|--------------------------------------------------|
+| `sitealarm`             | short | Whether active combat is underway                |
+| `sitealarmtimer`        | short | Suspicion countdown (-1 = undetected, 0+ = suspicious) |
+| `postalarmtimer`        | short | Reinforcement escalation timer (0–100+)          |
+| `sitealienate`          | 0/1/2 | Public alienation level                          |
+| `sitecrime`             | int   | Cumulative crime points from this operation      |
+| `encounter_timer`       | int   | Consecutive combat rounds counter                |
+| `encounter[]`           | array | Active NPCs in the current encounter             |
+| `levelmap[MAPX][MAPY][MAPZ]` | 3D    | Tile map with flags and special markers  |

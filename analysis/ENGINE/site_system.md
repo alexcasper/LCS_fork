@@ -22,8 +22,8 @@ Each tile is a `siteblockst` containing three fields:
 
 ```cpp
 struct siteblockst {
-    short flag;      // Bit-packed tile properties (23 flags)
-    char special;    // Special location enum (-1 = none)
+    short special;   // Special location enum (-1 = none)
+    int flag;        // Bit-packed tile properties (23 flags)
     char siegeflag;  // Siege-related state
 };
 ```
@@ -32,21 +32,21 @@ struct siteblockst {
 
 Tile properties are stored as bit flags on the `flag` field:
 
-| Category       | Flags                                                              |
-|----------------|--------------------------------------------------------------------|
-| Navigation     | `EXIT`, `BLOCK` (impassable wall), `DOOR`                         |
-| Access control | `LOCKED`, `KLOCK` (key lock), `CLOCK` (combination lock), `RESTRICTED` |
-| Contents       | `LOOT` (random loot present)                                      |
-| Visibility     | `KNOWN` (explored by player)                                      |
-| Environment    | `GRASSY`, `OUTDOOR`, `DEBRIS`, `CHAINLINK`, `METAL`               |
-| Damage         | `BLOODY`, `BLOODY2`                                               |
-| Graffiti       | `GRAFFITI`, `GRAFFITI_CCS`, `GRAFFITI_OTHER`                      |
-| Fire state     | `FIRE_START`, `FIRE_PEAK`, `FIRE_END`                             |
-| Alarm          | `ALARMED`                                                         |
+| Category       | Flags                                                                         |
+|----------------|-------------------------------------------------------------------------------|
+| Navigation     | `SITEBLOCK_EXIT`, `SITEBLOCK_BLOCK` (impassable wall), `SITEBLOCK_DOOR`      |
+| Access control | `SITEBLOCK_LOCKED`, `SITEBLOCK_KLOCK` (key lock), `SITEBLOCK_CLOCK` (combination lock), `SITEBLOCK_RESTRICTED` |
+| Contents       | `SITEBLOCK_LOOT` (random loot present)                                        |
+| Visibility     | `SITEBLOCK_KNOWN` (explored by player)                                        |
+| Environment    | `SITEBLOCK_GRASSY`, `SITEBLOCK_OUTDOOR`, `SITEBLOCK_DEBRIS`, `SITEBLOCK_CHAINLINK`, `SITEBLOCK_METAL` |
+| Damage         | `SITEBLOCK_BLOODY`, `SITEBLOCK_BLOODY2`                                       |
+| Graffiti       | `SITEBLOCK_GRAFFITI`, `SITEBLOCK_GRAFFITI_CCS`, `SITEBLOCK_GRAFFITI_OTHER`   |
+| Fire state     | `SITEBLOCK_FIRE_START`, `SITEBLOCK_FIRE_PEAK`, `SITEBLOCK_FIRE_END`          |
+| Alarm          | `SITEBLOCK_ALARMED`                                                           |
 
 ## Special Locations
 
-Special tiles mark interactive points of interest. There are 39 special location types, including:
+Special tiles mark interactive points of interest. There are 42 special location types (excluding `SPECIAL_NONE`), including:
 
 | Category     | Examples                                                        |
 |--------------|-----------------------------------------------------------------|
@@ -65,7 +65,7 @@ Site initialization in `initsite()` follows a three-tier fallback:
 initsite()
   ├─→ readMap()          [CSV maps — highest priority]
   ├─→ build_site()       [Config-driven procedural generation]
-  └─→ oldMapMode()       [Legacy random generation — fallback]
+  └─→ (legacy path)      [Legacy random generation — fallback when oldMapMode flag is set]
 ```
 
 The location's `mapseed` value seeds the RNG before generation, ensuring the same location always produces the same layout.
@@ -85,16 +85,17 @@ Multi-floor buildings use numbered suffixes (`_2_Tiles.csv`, `_3_Tiles.csv`). Th
 
 ### Tier 2: Config-Driven Templates
 
-The `build_site()` function reads named templates from the site configuration system. Templates use four command types:
+The `build_site()` function reads named templates from the site configuration system. Templates support several command types:
 
 | Command   | Purpose                                                    |
 |-----------|------------------------------------------------------------|
 | `TILE`    | Sets, adds, or subtracts tile flags in a defined region    |
-| `SCRIPT`  | Runs generation algorithms (ROOM, HALLWAY_YAXIS, STAIRS)   |
+| `SCRIPT`  | Runs generation algorithms (ROOM, HALLWAY_YAXIS, STAIRS, STAIRS_RANDOM) |
 | `SPECIAL` | Places special locations at random with defined frequency  |
+| `UNIQUE`  | Places unique one-off specials (distinct from SPECIAL)     |
 | `LOOT`    | Defines loot placement rules                               |
 
-Twenty-four location types map to 16 unique templates, with an inheritance system via the `USE` command.
+The `initsite()` switch in `build_site()` references 24 distinct template names. Templates can inherit from others using the `USE` command.
 
 ### Tier 3: Legacy Procedural Generation
 
@@ -130,7 +131,7 @@ An iterative flood-fill algorithm unrestricts tiles adjacent to already-unrestri
 
 ### Loot Placement
 
-Approximately 10% of non-door, non-wall tiles receive the `LOOT` flag for random item generation during gameplay.
+During a post-generation pass, tiles marked `SITEBLOCK_RESTRICTED` have a ~10% chance (`!LCSrandom(10)`) of receiving the `LOOT` flag for random item generation during gameplay. Several site types are explicitly excluded from getting random loot.
 
 ### Special Objective Placement
 
