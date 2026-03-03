@@ -18,7 +18,7 @@ Attributes serve as **caps for associated skills**: a character cannot raise a s
 
 ## Skills
 
-The game defines 33 skills organized into several categories.
+The game defines 31 skills organized into several categories.
 
 ### Combat Skills
 
@@ -41,6 +41,7 @@ The game defines 33 skills organized into several categories.
 
 | Skill       | Description                                      |
 |-------------|--------------------------------------------------|
+| Art         | Visual art creation for influence and fundraising |
 | Persuasion  | Convincing others through argument                |
 | Seduction   | Charm-based social manipulation                   |
 | Psychology  | Reading and understanding people                  |

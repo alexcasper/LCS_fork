@@ -20,7 +20,7 @@ A special **Stalinist** alignment exists as an extreme authoritarian-left outcom
 
 ## Laws
 
-The game tracks 24 laws, each rated on the alignment scale (-2 to +2):
+The game tracks 22 laws, each rated on the alignment scale (-2 to +2):
 
 | Law Category       | Description                                    |
 |--------------------|------------------------------------------------|
@@ -53,10 +53,12 @@ Two additional calculated indicators — **Mood** and **Stalin** — track overa
 
 Public opinion is tracked across 24+ issue categories (the `attitude[]` array), each on a 0–100 scale where higher values represent more liberal sentiment.
 
-Each opinion category maps to a specific law. For example:
-- **VIEW_WOMEN** influences `LAW_ABORTION`
-- **VIEW_GUNCONTROL** influences `LAW_GUNCONTROL`
-- **VIEW_SWEATSHOPS** influences `LAW_LABOR`
+Each law's public mood is derived from one or more related opinion categories. For example:
+- `LAW_ABORTION` is influenced by **VIEW_WOMEN**
+- `LAW_GUNCONTROL` is influenced by **VIEW_GUNCONTROL**
+- `LAW_LABOR` is influenced by **VIEW_SWEATSHOPS**
+
+Not every opinion category directly corresponds to a particular law, and some laws share the same underlying opinion categories.
 
 Public opinion shifts through:
 - **Squad actions**: Raiding sites generates news stories that shift related opinion categories.
@@ -64,9 +66,9 @@ Public opinion shifts through:
 - **Conservative Crime Squad**: An opposing force that generates negative counter-coverage.
 - **Impact formula**: Base ±20 points, modified by story priority and LCS reputation.
 
-### Violence Threshold
+### Violence and Public Opinion
 
-Public tolerance for political violence is calculated from `VIEW_POLITICALVIOLENCE + VIEW_LIBERALCRIMESQUADPOS`. When violent actions exceed this threshold, they can backfire and shift opinion against the player.
+Violent actions by the Liberal Crime Squad do not currently use a dedicated "political violence tolerance" stat. Instead, they influence existing public opinion categories through the normal news and event system: high‑profile violence can generate negative coverage that pushes related attitudes in a more Conservative or Arch‑Conservative direction, while carefully targeted actions that align with public sentiment may still win support.
 
 ## Government Branches
 

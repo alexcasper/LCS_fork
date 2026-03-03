@@ -6,25 +6,26 @@ Liberal Crime Squad uses **ncurses** (or **PDCurses** on Windows) for all displa
 
 ### Initialization
 
-The rendering system initializes in `src/cursesgraphics.cpp`:
+The main curses initialization is performed in `main()` in `src/game.cpp`, with helper routines in `src/cursesgraphics.cpp`:
 
 1. `initscr()` — Opens the curses screen.
-2. `curs_set(0)` — Hides the cursor.
-3. `raw_output()` — Enables raw input mode (no line buffering).
-4. `keypad()` — Enables special key detection (arrows, function keys).
-5. Color pairs are initialized as an 8×8 color matrix (foreground × background), providing 64 color combinations.
+2. `start_color()` — Enables color support.
+3. `keypad(stdscr, TRUE)` — Enables special key detection (arrows, function keys).
+4. `raw_output(TRUE)` — Disables output post-processing so CP437 characters render correctly.
+5. `curs_set(0)` — Hides the cursor.
+6. Color pairs are initialized (via helpers in `src/cursesgraphics.cpp`) as an 8×8 color matrix (foreground × background), providing 64 color combinations.
 
 ### Drawing Primitives
 
-All rendering uses standard curses functions:
+All rendering uses curses primitives and thin LCS helper wrappers:
 
-| Function     | Purpose                                  |
-|--------------|------------------------------------------|
-| `erase()`    | Clears the screen for a new frame        |
-| `move(y, x)` | Positions the cursor                    |
-| `addstr()`   | Writes text at the cursor position       |
-| `set_color()` | Sets the foreground/background color pair |
-| `refresh()`  | Flushes the frame buffer to the terminal  |
+| Function       | Purpose                                                                 |
+|----------------|-------------------------------------------------------------------------|
+| `erase()`      | Clears the screen for a new frame                                      |
+| `move(y, x)`   | Positions the cursor                                                   |
+| `addstr()`     | Writes text at the cursor position                                     |
+| `set_color()`  | LCS helper that sets the active color pair (wraps `attrset(COLOR_PAIR)`)| 
+| `refresh()`    | Flushes the frame buffer to the terminal                               |
 
 ### UI Elements
 

@@ -129,7 +129,7 @@ Chase sequences use a separate combat system where:
 
 Kidnapping requires:
 
-- Target must be alive, not arch-conservative (alignment != -1), not already captured, and have blood > 20.
+- Target must be alive, Conservative (`align == -1`), and not already captured.
 - **Unarmed**: Hand-to-hand skill check vs target's Agility.
 - **Armed**: Automatic success if the weapon has the `can_take_hostages` property.
-- Some weapons grant `protects_against_kidnapping`, making their wielders immune.
+- Kidnapping is blocked if the target both wields a weapon with `protects_against_kidnapping()` and has blood > 20.
