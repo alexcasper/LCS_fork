@@ -80,3 +80,29 @@ Animation data is stored in `.cmv` files for sequenced visual effects.
 | macOS    | ncurses        | SDL2_mixer    | Via Homebrew dependencies     |
 
 Windows builds bundle `pdcurses.dll`, `SDL2.dll`, `SDL2_mixer.dll`, and Vorbis libraries directly in the repository root.
+
+## News Display Pipeline
+
+The newspaper display system renders dynamically generated news stories using a layered approach:
+
+### Layout Process
+
+1. **Page composition** — Stories are assigned to pages by priority. High-priority stories get front-page placement with larger visual elements.
+2. **Header rendering** — Pre-rendered newspaper mastheads from `newstops.cpc` (6 variants × 80 × 5 × 4) are displayed at the top of each page.
+3. **Story text generation** — Each story type has dedicated text generation functions that produce headline and body copy based on the event details.
+4. **Illustration placement** — Front-page stories may include graphics from `newspic.cpc` (20 images × 78 × 18 × 4).
+5. **Ad generation** — Remaining page space is filled with procedurally generated advertisements.
+
+### Color Coding System
+
+The terminal interface uses color extensively to convey game state:
+
+| Color Usage           | Meaning                                          |
+|-----------------------|--------------------------------------------------|
+| Green text            | Liberal-aligned / positive indicators            |
+| Red text              | Conservative-aligned / danger indicators         |
+| White on black        | Default text                                     |
+| Yellow                | Highlighted or important information             |
+| Bright/bold variants  | Emphasis and headers                             |
+
+Color pairs are initialized as an 8×8 matrix (foreground × background), providing 64 combinations. The `set_color()` function selects the appropriate pair for each UI element.
