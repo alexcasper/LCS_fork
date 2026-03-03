@@ -70,7 +70,7 @@ The configuration system in `configfile.cpp` implements a factory pattern for da
 
 ### File Format
 
-Configuration files use tab-separated `COMMAND VALUE` pairs with `#` comments. Note that `readLine()` only captures a single token (up to whitespace) as the value:
+Configuration files use whitespace-separated `COMMAND VALUE` pairs with `#` comments. Note that `readLine()` only captures a single token (up to whitespace) as the value:
 
 ```
 # Site map definition
@@ -78,8 +78,9 @@ SITEMAP GOVERNMENT_POLICESTATION
 TILE    RESTRICTED
 SCRIPT  ROOM
 SPECIAL POLICESTATION_LOCKUP
-UNIQUE  1
 ```
+
+Note: `UNIQUE` and `SPECIAL` are separate command types (see template commands below). Each line contains one command and one value.
 
 ### Architecture
 

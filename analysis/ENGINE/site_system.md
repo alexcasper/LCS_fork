@@ -65,7 +65,7 @@ Site initialization in `initsite()` follows a three-tier fallback:
 initsite()
   ├─→ readMap()          [CSV maps — highest priority]
   ├─→ build_site()       [Config-driven procedural generation]
-  └─→ (legacy path)      [Legacy random generation — fallback when oldMapMode flag is set]
+  └─→ generateroom()     [Legacy random generation — fallback when the global `oldMapMode` flag is set]
 ```
 
 The location's `mapseed` value seeds the RNG before generation, ensuring the same location always produces the same layout.
