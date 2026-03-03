@@ -110,17 +110,18 @@ Each safehouse tracks its rental state:
 
 ### Heat Protection
 
-Heat protection determines how much criminal activity a safehouse can conceal before attracting a siege. The formula combines the base protection from the safehouse type with additional modifiers:
+Heat protection determines how much criminal activity a safehouse can conceal before attracting a siege. The formula in `Location::update_heat_protection()` combines a base value from the safehouse type with a flag modifier that depends on both `law[LAW_FLAGBURNING]` and whether the safehouse has a flag (`haveflag`):
+
+- Stricter flag-burning law (`-2`) with a flag present provides the largest bonus (+6).
+- More moderate laws with a flag provide a smaller bonus (+2).
+- When the flag is sacred (law ≤ -1) and the safehouse has no flag, a penalty (-2) is applied.
 
 ```
-protection = base_heat_protection
-           + flag_burning_bonus (2 to 6, based on law[LAW_FLAGBURNING])
+protection = base_heat_protection + flag_modifier
 
 final_protection = protection × 5
 if final_protection > 95: final_protection = 95
 ```
-
-The flag burning law bonus scales with the current legal status — more permissive free speech laws provide greater heat protection.
 
 ## Compound Upgrades
 

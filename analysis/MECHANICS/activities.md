@@ -10,8 +10,8 @@ Between site operations, Liberal Crime Squad members perform daily activities fr
 
 Recruitment begins with finding potential liberals. A recruiter's **Street Sense** skill determines how many candidates they can locate:
 
-- 5 candidates are found automatically if the base difficulty is below 10.
-- Each additional candidate requires a Street Sense roll exceeding `difficulty + (candidate_count × 2)`.
+- If the base difficulty is below 10, the recruiter is guaranteed to find 1 candidate and may search for more.
+- Up to 4 additional candidates (for a maximum of 5) can be found; each extra candidate requires a Street Sense roll exceeding `difficulty + (candidate_count × 2)`.
 
 ### Recruitment Difficulty
 
@@ -39,11 +39,11 @@ Maximum difficulty is capped at 18.
 
 ### Recruitment Meetings
 
-Recruitment meetings use a two-pass system with the **Persuasion** skill:
+Recruitment meetings can repeat across multiple days. Each meeting adjusts the recruit's `eagerness` level:
 
-1. **First success**: Builds rapport with the candidate.
-2. **Second success** (same difficulty): Converts the candidate to the cause.
-3. **Failure at any point**: The meeting ends without conversion.
+1. **Persuasion check**: Each meeting attempts to increase the candidate's eagerness.
+2. **Conversion**: When `eagerness >= 4` and the recruiter has available subordinate capacity, the candidate can be converted.
+3. **Failure at any point**: The meeting ends without progress for that day.
 
 **Eagerness modifiers** adjust the candidate's willingness:
 
@@ -157,15 +157,15 @@ Several activities generate income for the LCS:
 | Selling T-shirts | Tailoring     | Formidable (13)| T-shirt sales                |
 | Prostitution     | Seduction     | Varies         | Street earnings              |
 | Selling brownies | Persuasion    | Varies         | Brownie sales                |
-| Hacking          | Computers     | Challenging+   | Embezzled funds              |
+| Hacking          | Computers     | Heroic+ (15+, team)| Embezzled funds              |
 
 ### Hacking Escalation
 
-Hacking starts at Challenging difficulty (9) and escalates:
+Major hacking becomes available once the squad's combined hacking ability reaches Heroic difficulty:
 
-- Each successful hack increases difficulty by 2.
-- Law enforcement trackdown difficulty starts at Superheroic (17) and drops toward Impossible (19) as hack severity grows.
-- A **Street Sense** check at the current difficulty is required to avoid detection.
+- Major hacking is gated by `hack_skill + team_size - 1 >= DIFFICULTY_HEROIC (15)`.
+- On each hack attempt, law-enforcement tracking is checked with `trackdif > hack_skill + random(5) - 2`, where `trackdif` depends on the hack type and is typically Superheroic to Impossible.
+- There is no per-success +2 escalation loop or **Street Sense** avoidance check in this daily hacking path; each hack attempt is resolved independently at its defined difficulty.
 
 ## Sleeper Agents
 
