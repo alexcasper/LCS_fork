@@ -1,0 +1,83 @@
+# Engine Architecture
+
+## Overview
+
+Liberal Crime Squad is built in **C++11** and uses a classic roguelike architecture: a single-threaded game loop, terminal-based rendering via **ncurses** (or PDCurses on Windows), optional **SDL2** for graphics and audio, and XML-driven data loading.
+
+## Source Structure
+
+```
+src/
+├── game.cpp              # Main entry point and game loop
+├── creature/             # Character system (Creature class, augmentations)
+├── combat/               # Combat engine (fight, chase, kidnapping)
+├── basemode/             # Headquarters management and squad activities
+├── sitemode/             # Tactical site exploration and encounters
+├── items/                # Weapons, armor, clips, loot definitions
+├── daily/                # Daily cycle processing
+├── monthly/              # Monthly events, elections, politics
+├── locations/            # World map and location management
+├── news/                 # News story generation and media system
+├── politics/             # Political alignment, law tracking, public opinion
+├── common/               # Shared utilities (equipment, display, actions)
+└── cursesgraphics.cpp    # Rendering layer (ncurses interface)
+```
+
+## Game Modes
+
+The engine organizes gameplay into distinct modes, each with its own main loop:
+
+| Mode           | Entry Point           | Description                                    |
+|----------------|-----------------------|------------------------------------------------|
+| **Title**      | `mode_title()`        | Main menu: new game, load, high scores         |
+| **Base**       | `mode_base()`         | Squad management, activities, and planning      |
+| **Site**       | `mode_site()`         | Tactical operations at target locations          |
+| **Chase**      | Chase functions        | Vehicle and foot pursuit sequences              |
+
+### Mode Flow
+
+```
+main() → mode_title() → [New Game / Load Game]
+                              ↓
+                        mode_base()  ←──────────────┐
+                         ↓      ↑                    │
+                   mode_site() ──┘                    │
+                         ↓                            │
+                   advanceday() → passmonth() ────────┘
+```
+
+## Key Classes
+
+| Class        | File                   | Purpose                                      |
+|--------------|------------------------|----------------------------------------------|
+| `Creature`   | `creature/creature.h`  | Player and NPC characters                    |
+| `Squad`      | Squad management        | Groups of up to 6 characters                 |
+| `Weapon`     | `items/weapon.h`       | Weapon definitions and attack properties     |
+| `Armor`      | `items/armor.h`        | Armor with coverage and quality tracking     |
+| `Vehicle`    | Vehicle definitions     | Transportation and chase combat bonuses      |
+| `Augmentation` | `creature/augmentation.h` | Character enhancement system             |
+
+## Global State
+
+The engine relies heavily on global state for simplicity and performance:
+
+- `pool[]` — All characters (player and NPC) in the game.
+- `squad[]` — All active squads.
+- `vehicle[]` — All owned vehicles.
+- `location[]` — All game locations.
+- `activesquad` — Pointer to the currently selected squad.
+- `day`, `month`, `year` — Game clock.
+- `attitude[VIEWNUM]` — Public opinion per issue (0–100).
+- `law[LAWNUM]` — Legal alignment per law (-2 to +2).
+- `senate[]`, `house[]`, `court[]` — Government branch alignments.
+
+## Dependencies
+
+| Library        | Purpose                                 | Required |
+|----------------|-----------------------------------------|----------|
+| ncurses/ncursesw | Terminal rendering and input           | Yes      |
+| SDL2           | Optional graphical display               | No       |
+| SDL2_mixer     | Background music and sound effects       | No       |
+| libogg/libvorbis | Ogg Vorbis audio decoding             | No       |
+
+The build system uses **GNU Autotools** (`configure.ac`, `Makefile.am`) with a C++11 compiler requirement. SDL2 support is optional and can be disabled with the `DONT_INCLUDE_SDL` flag.
